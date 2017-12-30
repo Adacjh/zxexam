@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zwj.dao.QuestionDao">
+	<insert id="addRaQuestion" parameterType="RadioQuestions">
+		insert into
+		exam_test_radio(radio_subname,radio_content,radio_answer_A,radio_answer_B,radio_answer_C,radio_answer_D,radio_answer,radio_difficulty,radio_date,radio_state)
+		values
+		(#{radioSubName},#{radioContent},#{radioAnswerA},#{radioAnswerB},#{radioAnswerC},#{radioAnswerD},#{radioAnswer},#{radioDifficulty},sysdate(),1)
+	</insert>
+	<select id="getRaQuestions" parameterType="int"
+		resultMap="questionmapper">
+		select
+	  radio_id,value as radio_subname,radio_content,radio_answer_A,radio_answer_B,radio_answer_C,radio_answer_D,radio_answer
+		from exam_test_radio A,exam_dictionaries B where radio_state=1 and radio_subname=#{0} and B.id=1002 and A.radio_subname=B.code
+	</select>
+	<resultMap type="RadioQuestions" id="questionmapper">
+		<id property="radioId" column="radio_id" />
+		<result property="radioContent" column="radio_content" />
+		<result property="radioAnswerA" column="radio_answer_A" />
+		<result property="radioAnswerB" column="radio_answer_B" />
+		<result property="radioAnswerC" column="radio_answer_C" />
+		<result property="radioAnswerD" column="radio_answer_D" />
+		<result property="radioAnswer" column="radio_answer" />
+		<result property="radioDifficulty" column="radio_difficulty"/>
+		<result property="radioSubName" column="radio_subname"/>
+	</resultMap>
+	<insert id="addChQuestion" parameterType="CheckQuestions">
+		insert into
+		exam_test_check(check_subname,check_content,check_answer_A,check_answer_B,check_answer_C,check_answer_D,check_answer,check_difficulty,check_date,check_state)
+		values
+		(#{checkSubName},#{checkContent},#{checkAnswerA},#{checkAnswerB},#{checkAnswerC},#{checkAnswerD},#{checkAnswer},#{checkDifficulty},sysdate(),1)
+	</insert>
+	<select id="getChQuestions" parameterType="CheckQuestions"
+		resultMap="questionmapper1">
+		select
+		check_id,value as check_subname,check_content,check_answer_A,check_answer_B,check_answer_C,check_answer_D,check_answer
+		from exam_test_check A ,exam_dictionaries B where check_state=1 and check_subname=#{0} and B.id=1002 and A.check_subname=B.code
+	</select>
+	<resultMap type="CheckQuestions" id="questionmapper1">
+		<id property="checkId" column="check_id" />
+		<result property="checkContent" column="check_content" />
+		<result property="checkAnswerA" column="check_answer_A" />
+		<result property="checkAnswerB" column="check_answer_B" />
+		<result property="checkAnswerC" column="check_answer_C" />
+		<result property="checkAnswerD" column="check_answer_D" />
+		<result property="checkAnswer" column="check_answer" />
+		<result property="checkDifficulty" column="check_difficulty"/>
+		<result property="checkSubName" column="check_subname"/>
+	</resultMap>
+	<update id="delRaQuestions" parameterType="RadioQuestions">
+		update exam_test_radio
+		set radio_state=0 where radio_id=#{radioId}
+	</update>
+	<update id="delchQuestions" parameterType="CheckQuestions">
+		update exam_test_check
+		set check_state=0 where check_id=#{checkId}
+	</update>
+	<select id="getRaQuestionById" parameterType="int" resultMap="questionmapper">
+		select * from exam_test_radio where radio_id =#{id} and radio_state=1
+	</select>
+	<select id="getChQuestionById" parameterType="int" resultMap="questionmapper1">
+		select * from exam_test_check where check_id =#{id} and check_state=1
+	</select>
+	<update id="updateRaQuestion" parameterType="RadioQuestions">
+		update
+		exam_test_radio set radio_content=#{radioContent},
+		radio_answer_A=#{radioAnswerA} ,
+		radio_answer_B=#{radioAnswerB} ,
+		radio_answer_C=#{radioAnswerC} , radio_answer_D=#{radioAnswerD} ,
+		radio_answer=#{radioAnswer} ,
+		radio_difficulty=#{radioDifficulty} where
+		radio_id=#{radioId}
+	</update>
+	<update id="updateChQuestion" parameterType="CheckQuestions">
+	update exam_test_check set check_content=#{checkContent}
+	,check_answer_A=#{checkAnswerA} ,check_answer_B=#{checkAnswerB}
+	,check_answer_C=#{checkAnswerC} ,check_answer_D=#{checkAnswerD}
+	,check_answer=#{checkAnswer} , check_difficulty=#{checkDifficulty}
+	where check_id=#{checkId}
+	</update>
+	<select id="getAllsub" resultMap="subMap">
+	select code, value from exam_dictionaries where id=1002
+	</select>
+	<resultMap type="Subject" id="subMap">
+	<result property="id" column="id"/>
+	<result property="name" column="name"/>
+	<result property="code" column="code"/>
+	<result property="value" column="value"/>
+	</resultMap>
+	<select id="getSubName" parameterType="String" resultType="String">
+	 select value from exam_dictionaries where id=1002 and code=#{subId}
+	</select>
+</mapper>

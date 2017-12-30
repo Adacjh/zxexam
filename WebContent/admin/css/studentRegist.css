@@ -1,0 +1,32 @@
+@CHARSET "UTF-8";
+td{
+	width: 120px;
+	text-align: left;
+	font-size: 20px;
+}
+table{
+	center;
+}
+#top {
+	width: 100%;
+	height: 90px;
+	background-image: url("../../images/banner.jpg");
+}
+#td1{
+	text-align: center;
+}
+#td2{
+	text-align: right;
+}
+#main {
+	width: 73.2%;
+	height: 595px;
+	margin: 0px auto;
+}
+#mid{
+	margin-left: 340px;
+	margin-top: 40px;
+}
+.c1{
+	text-align: right;
+}

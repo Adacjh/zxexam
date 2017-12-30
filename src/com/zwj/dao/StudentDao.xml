@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zwj.dao.StudentDao">
+	<select id="userNameSearch" parameterType="User" resultType="int">
+		select count(*) from exam_user where
+		user_account_number=#{userAccountNumber} and user_state=1 and
+		user_role=#{userRole};
+	</select>
+	<select id="userPasswordSearch" parameterType="User" resultType="int">
+		select count(*) from exam_user where
+		user_account_number=#{userAccountNumber} and user_state=1 and
+		user_role=#{userRole} and user_password=#{userPassword};
+	</select>
+	<select id="getUserIfTest" parameterType="int" resultMap="submapper">
+		select
+		* from subject_test where subject_bianhao not in (select A.test_id
+		from student_test A , subject_test B where A.user_id=#{userId} and
+		A.test_id = B.subject_bianhao and state=0)
+	</select>
+	<resultMap type="SubjectTest" id="submapper">
+		<id property="subjectId" column="subject_id" />
+		<result property="subjectName" column="subject_name" />
+		<result property="subjectBianhao" column="subject_bianhao" />
+		<result property="subjectDate" column="subject_date" />
+		<result property="subjectState" column="subject_state" />
+	</resultMap>
+	<insert id="setTestInfo" parameterType="Score">
+		insert into student_score
+		(test_id,
+		user_id,number,answer,myanswer,score,type) values
+		(#{testId},#{userId},#{number},#{answer},#{myAnswer},#{score},#{type})
+	</insert>
+	<select id="getSumScore" parameterType="Score" resultMap="scoreMap">
+
+		select
+		* from student_score where answer=myanswer and user_id=#{userId} and
+		number=#{number}
+	</select>
+	<insert id="studentTestSave" parameterType="Score">
+		insert into
+		student_test (test_id,user_id,number,state,date,score,sum_score)
+		values
+		(#{testId},#{userId},#{number},0,sysdate(),#{score},#{sumScore})
+	</insert>
+
+	<resultMap type="Score" id="scoreMap">
+		<id column="id" property="id" />
+		<result column="test_id" property="testId" />
+		<result column="user_id" property="userId" />
+		<result column="number" property="number" />
+		<result column="answer" property="answer" />
+		<result column="myanswer" property="myAnswer" />
+		<result column="score" property="score" />
+		<result column="type" property="type" />
+	</resultMap>
+	<select id="getTest" parameterType="int" resultMap="testMap">
+		select
+		A.*,B.subject_name AS testName from student_test A, subject_test B
+		where user_id=#{userId} and A.test_id=B.subject_bianhao
+	</select>
+	<select id="setScore" parameterType="score" resultType="int">
+		select
+		sum(score) from student_score where number=#{number}
+	</select>
+	<resultMap type="Test" id="testMap">
+		<id column="id" property="id" />
+		<result column="test_id" property="testId" />
+		<result column="user_id" property="userId" />
+		<result column="state" property="state" />
+		<result column="date" property="date" />
+		<result column="number" property="number" />
+		<result column="score" property="score" />
+		<result column="sum_score" property="sumScore" />
+		<result column="testName" property="testName" />
+	</resultMap>
+	<select id="setTestByTeseId" parameterType="Score" resultMap="testInfoMap">
+		select B.subject_name as name,C.radio_content as
+		content,C.radio_answer_A as answerA,C.radio_answer_B as
+		answerB,C.radio_answer_C as answerC,C.radio_answer_D as
+		answerD,C.radio_answer as answer,E.myanswer,A.score,A.sum_score,
+		D.zujuan_score from student_test A, subject_test B ,exam_test_radio C,
+		exam_zujuan D, student_score E where E.type=1 AND A.user_id=#{userId}
+		and
+		A.test_id=#{testId} and B.subject_bianhao=A.test_id and
+		B.subject_bianhao=D.question_bh and D.question_id=C.radio_id and
+		E.number=A.number and A.test_id=B.subject_bianhao and
+		C.radio_answer=E.answer and E.type=D.zujuan_type and
+		A.test_id=B.subject_bianhao and zujuan_score=E.score and
+		D.question_id=E.test_id GROUP BY d.question_id
+
+	</select>
+	<resultMap type="TestInfo" id="testInfoMap">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="content" property="content" />
+		<result column="answerA" property="answerA" />
+		<result column="answerB" property="answerB" />
+		<result column="answerC" property="answerC" />
+		<result column="answerD" property="answerD" />
+		<result column="answer" property="answer" />
+		<result column="myAnswer" property="myAnswer" />
+		<result column="score" property="score" />
+		<result column="sum_score" property="sumScore" />
+		<result column="zujuan_score" property="mScore" />
+	</resultMap>
+	<select id="setTestByTeseId1" parameterType="Score" resultMap="testInfoMap">
+		select B.subject_name as name,C.check_content as
+		content,C.check_answer_A as answerA,C.check_answer_B as
+		answerB,C.check_answer_C as answerC,C.check_answer_D as
+		answerD,C.check_answer as answer,E.myanswer,A.score,A.sum_score,
+		D.zujuan_score from student_test A, subject_test B ,exam_test_check C,
+		exam_zujuan D, student_score E where E.type=2 AND A.user_id=#{userId} and
+		A.test_id=#{testId} and B.subject_bianhao=A.test_id and
+		B.subject_bianhao=D.question_bh and D.question_id=C.check_id and
+		E.number=A.number and A.test_id=B.subject_bianhao and
+		C.check_answer=E.answer and E.type=D.zujuan_type and
+		A.test_id=B.subject_bianhao and zujuan_score=E.score and
+		D.question_id=E.test_id GROUP BY d.question_id
+
+
+	</select>
+</mapper>

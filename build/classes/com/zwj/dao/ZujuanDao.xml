@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zwj.dao.ZujuanDao">
+	<select id="setRaQuestionTest" parameterType="int" resultMap="questionmapper">
+		select * from exam_test_radio where radio_difficulty=#{1} and radio_subname=#{2} order by
+		rand() LIMIT #{0}
+	</select>
+	<resultMap type="RadioQuestions" id="questionmapper">
+		<id property="radioId" column="radio_id" />
+		<result property="radioContent" column="radio_content" />
+		<result property="radioAnswerA" column="radio_answer_A" />
+		<result property="radioAnswerB" column="radio_answer_B" />
+		<result property="radioAnswerC" column="radio_answer_C" />
+		<result property="radioAnswerD" column="radio_answer_D" />
+		<result property="radioAnswer" column="radio_answer" />
+	</resultMap>
+
+	<select id="setCkQuestionTest" parameterType="ZuJuan" resultMap="ckQuestionMap">
+		select * from exam_test_check where check_difficulty=#{1} and  check_subname=#{2} order by
+		rand() LIMIT #{0}
+	</select>
+
+	<resultMap type="CheckQuestions" id="ckQuestionMap">
+		<id property="checkId" column="check_id" />
+		<result property="checkContent" column="check_content" />
+		<result property="checkAnswerA" column="check_answer_A" />
+		<result property="checkAnswerB" column="check_answer_B" />
+		<result property="checkAnswerC" column="check_answer_C" />
+		<result property="checkAnswerD" column="check_answer_D" />
+		<result property="checkAnswer" column="check_answer" />
+		<result property="score" column="zujuan_score" />
+		<result property="testTime" column="test_time" />
+		<result property="subjectName" column="subject_name" />
+	</resultMap>
+
+	<insert id="addZujuanRadio" parameterType="ZuJuan">
+		insert into
+		exam_zujuan(question_bh,question_id,zujuan_type,zujuan_number,zujuan_difficulty,zujuan_score)
+		values(#{questionBh},#{questionId},#{zujuanType},#{zujuanNumber},#{zujuanDifficulty},#{zujuanScore})
+	</insert>
+	<insert id="addZujuanCheck" parameterType="ZuJuan">
+		insert into
+		exam_zujuan(question_bh,question_id,zujuan_type,zujuan_number,zujuan_difficulty,zujuan_score)
+		values(#{questionBh},#{questionId},#{zujuanType},#{zujuanNumber},#{zujuanDifficulty},#{zujuanScore})
+	</insert>
+	<insert id="addSubTest" parameterType="SubjectTest">
+		insert into
+		subject_test(subject_name,subject_bianhao,subject_date,subject_state,test_time,sub_name)
+		values(#{subjectName},#{subjectBianhao},sysdate(),1,#{testTime},#{subName})
+	</insert>
+	<select id="zujuanInfo" parameterType="SubjectTest" resultMap="submapper">
+select *,value as subName from subject_test A,exam_dictionaries B where A.subject_state=1 and A.sub_name=B.code and B.id=1002	</select>
+	<resultMap type="SubjectTest" id="submapper">
+		<id property="subjectId" column="subject_id" />
+		<result property="subjectName" column="subject_name" />
+		<result property="subjectBianhao" column="subject_bianhao" />
+		<result property="subjectDate" column="subject_date" />
+		<result property="subjectState" column="subject_state" />
+		<result property="testTime" column="test_time" />
+		<result property="subName" column="subName"/>
+	</resultMap>
+
+	<select id="subTestInfo" parameterType="ZuJuan" resultMap="testramapper">
+		select B.*,C.test_time,A.zujuan_score,C.subject_name 
+		from exam_zujuan A,exam_test_radio B, subject_test C
+		where A.question_id=B.radio_id and C.subject_bianhao=#{questionBh} and
+		A.zujuan_type=1 and A.question_bh=C.subject_bianhao order by
+		B.radio_id
+
+	</select>
+	<resultMap type="RadioQuestions" id="testramapper">
+		<id property="radioId" column="radio_id" />
+		<result property="radioContent" column="radio_content" />
+		<result property="radioAnswerA" column="radio_answer_A" />
+		<result property="radioAnswerB" column="radio_answer_B" />
+		<result property="radioAnswerC" column="radio_answer_C" />
+		<result property="radioAnswerD" column="radio_answer_D" />
+		<result property="radioAnswer" column="radio_answer" />
+		<result property="score" column="zujuan_score" />
+		<result property="testTime" column="test_time" />
+		<result property="subjectName" column="subject_name" />
+
+	</resultMap>
+	<select id="subTestInfo1" parameterType="ZuJuan" resultMap="ckQuestionMap">
+		select B.*,C.test_time,A.zujuan_score, C.subject_name  from exam_zujuan A,exam_test_check B,subject_test C where
+		A.question_id=B.check_id and
+		C.subject_bianhao=#{questionBh} and A.zujuan_type=2 and C.subject_bianhao=A.question_bh
+		order by B.check_id
+
+	</select>
+<update id="delTestInfo" parameterType="int">
+update subject_test set subject_state=0 where subject_id=#{0}
+</update>
+</mapper>
+

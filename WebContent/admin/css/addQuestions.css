@@ -1,0 +1,12 @@
+@CHARSET "UTF-8";
+.text{
+width: 160px;padding: 6px;
+} 
+h1{
+font-size: 20px;
+margin-left: 60px;
+}
+table{
+	margin: 0px auto;
+}
+

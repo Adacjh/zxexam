@@ -1,0 +1,39 @@
+@CHARSET "UTF-8";
+#d1{
+	height: 584px;
+	width: 1004px;
+	background-image: url("../images/login.jpg");
+	margin: 0px auto;
+		border: 1px solid white;
+	
+}
+#div2{
+	height: 188px;
+	width: 360px;
+	margin-left: 495px;
+	margin-top: 183px;
+}
+table{
+	margin: 100px auto;
+}
+#reset{
+	float: right;
+}
+#passWordDiv{
+	width: 300px;
+	height: 350px;
+	margin-top: 100px;
+	margin-left:520px;
+	position:absolute;
+	background-color: white;	
+}
+#b{
+	margin-left: 285px;
+	cursor:pointer;
+}
+#tableDiv{
+	margin-top: 15px;
+}
+td{
+	height: 40px;
+}

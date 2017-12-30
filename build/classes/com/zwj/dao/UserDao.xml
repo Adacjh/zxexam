@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zwj.dao.UserDao">
+<select id="userNameSearch" parameterType="User" resultType="int">
+ select count(*) from exam_user where user_account_number=#{userAccountNumber} and user_state=1;
+</select>
+<select id="userPasswordSearch" parameterType="User" resultType="int">
+ select count(*) from exam_user where user_account_number=#{userAccountNumber} and user_state=1 and user_role=#{userRole} and user_password=#{userPassword};
+</select>
+<select id="getStudentInfo" parameterType="Page" resultMap="usermapper">
+ select exam_user.user_id,exam_user.user_name,exam_user.user_account_number,exam_user.user_password,exam_dictionaries.value,exam_user.user_phone,exam_user.user_date,exam_user.user_state from exam_user,exam_dictionaries where user_role=3 and user_state=1 and user_sex=exam_dictionaries.code group by user_id limit #{begin},#{end}
+</select>
+<select id="getTeacherInfo" parameterType="Page" resultMap="usermapper">
+ select exam_user.user_id,exam_user.user_name,exam_user.user_account_number,exam_user.user_password,exam_dictionaries.value,exam_user.user_phone,exam_user.user_date,exam_user.user_state from exam_user,exam_dictionaries where user_role=2 and user_state=1 and user_sex=exam_dictionaries.code group by user_id limit #{begin},#{end}
+</select>
+<resultMap type="User" id="usermapper">
+<id property="userId" column="user_id"/>
+<result property="userName" column="user_name"/>
+<result property="userAccountNumber" column="user_account_number"/>
+<result property="userPassword" column="user_password"/>
+<result property="userValue" column="value"/>
+<result property="userPhone" column="user_phone"/>
+<result property="userDate" column="user_date"/>
+<result property="userState" column="user_state"/>
+</resultMap>
+<update id="delStudentInfo" parameterType="User" >
+update exam_user set user_state=0 where user_id=#{userId}
+</update>
+<update id="delTeacherInfo" parameterType="User" >
+update exam_user set user_state=0 where user_id=#{userId}
+</update>
+<select id="getPageInfo" resultType="Integer">
+select count(*) from exam_user where user_state=1 and user_role=3
+</select>
+<select id="getPageInfo1" resultType="Integer">
+select count(*) from exam_user where user_state=1 and user_role=2
+</select>
+<insert id="stuRegist" parameterType="User">
+insert into exam_user(user_name,user_account_number,user_password,user_sex,user_role,user_phone,user_date,user_state)
+values(#{userName},#{userAccountNumber},#{userPassword},#{userSex},3,#{userPhone},sysdate(),1)
+</insert>
+<select id="searchUserInfo" parameterType="String" resultMap="usermapper">
+select * from exam_user where user_account_number=#{userName} and user_state=1
+</select>
+<select id="searchUserById" parameterType="int" resultType="String">
+select user_name from exam_user where user_id=#{userId}
+</select>
+<select id="ifExist" parameterType="User" resultType="int">
+select count(*) from exam_user where user_phone=#{userPhone}
+</select>
+<insert id="teacherAdd" parameterType="User">
+insert into exam_user(user_name,user_account_number,user_password,user_sex,user_role,user_phone,user_date,user_state)
+values(#{userName},#{userAccountNumber},#{userPassword},#{userSex},2,#{userPhone},sysdate(),1)
+</insert>
+<select id="yZpassWord" parameterType="User" resultType="int">
+select count(*) from exam_user where user_id=#{userId} and user_password=#{userPassword}
+</select>
+<update id="updatePassWord" parameterType="User">
+update exam_user set user_password=#{userPassword} where user_id=#{userId}
+</update>
+<select id="ifExistPhone" parameterType="User" resultType="int">
+select count(*) from exam_user where user_phone=#{userPhone} 
+</select>
+<select id="ifPiPei" parameterType="User" resultType="int">
+select count(*) from exam_user where user_phone=#{userPhone} and user_account_number=#{userAccountNumber}
+</select>
+<select id="ifExistUser" parameterType="User" resultType="int">
+select count(*) from exam_user where  user_account_number=#{userAccountNumber}
+</select>
+<update id="userPassWordUpde" parameterType="User" >
+update exam_user set user_password=#{userPassword} where user_phone=#{userPhone} and user_account_number=#{userAccountNumber}
+</update>
+</mapper>

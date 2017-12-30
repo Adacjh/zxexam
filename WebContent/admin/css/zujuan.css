@@ -1,0 +1,27 @@
+@CHARSET "UTF-8";
+.fontS{
+	font-size: 20px;
+}
+#div1{
+	margin-top: -13px;
+}
+i{
+    color:red;
+}
+#button {
+	margin-left:600px;
+	position:fixed;
+}
+p{
+	text-align: center;	
+}
+#button2 {
+	margin-left: 2%;
+	position:fixed;
+}
+#bun1{
+	margin-top: -16px;
+}
+#sub{
+	margin: 0px auto;
+}
